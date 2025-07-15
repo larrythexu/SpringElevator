@@ -4,14 +4,13 @@ import io.github.larrythexu.ElevatorEmu.Enums.Direction;
 import lombok.Data;
 
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.PriorityQueue;
 
 @Data
 public class Elevator {
 
     private final int id;
-    private int currFloor;
+    private int currFloor = 0;
     private Direction direction = Direction.NEUTRAL;
     private PriorityQueue<Integer> upList = new PriorityQueue<>();
     private PriorityQueue<Integer> downList = new PriorityQueue<>(Comparator.reverseOrder());
@@ -23,6 +22,10 @@ public class Elevator {
 
     public int moveDown() {
         return --currFloor;
+    }
+
+    public boolean isNeutral() {
+        return direction == Direction.NEUTRAL;
     }
 
     /**
@@ -73,7 +76,7 @@ public class Elevator {
         }
     }
 
-    private void addFloor(int targetFloor) {
+    public void addFloor(int targetFloor) {
         if (currFloor == targetFloor) {
             return;
         }
@@ -85,7 +88,15 @@ public class Elevator {
         }
     }
 
-    private void pollFloor(PriorityQueue<Integer> floorQueue) {
-
+    /**
+     * Returns the next target destination floor, depending on direction
+     * If no floors in current direction, returns -1
+     */
+    public int getNextFloor() {
+        return switch (direction) {
+            case UP -> (upList.isEmpty()) ? -1 : upList.poll();
+            case DOWN -> (downList.isEmpty()) ? -1 : downList.poll();
+            default -> -1;
+        };
     }
 }
