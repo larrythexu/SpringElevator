@@ -2,10 +2,12 @@ package io.github.larrythexu.ElevatorEmu.Elevator;
 
 import io.github.larrythexu.ElevatorEmu.Enums.Direction;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+@Slf4j
 @Data
 public class Elevator {
 
@@ -45,7 +47,9 @@ public class Elevator {
 
         // Assuming either upList or downList isn't empty, we go Up or Down
         switch (direction) {
+            // Current behavior: When NEUTRAL->UP/DOWN, it takes 1 turn
             case NEUTRAL:
+                // TODO: should movement be processed immediately?
                 direction = !upList.isEmpty() ? Direction.UP : Direction.DOWN;
                 break;
 
@@ -69,15 +73,22 @@ public class Elevator {
 
     private void removeOnSameFloor() {
         if (Integer.valueOf(currFloor).equals(upList.peek())) {
+            log.info("Elevator {}: arrived at queued floor {}", id, currFloor);
             upList.remove();
         }
         if (Integer.valueOf(currFloor).equals(downList.peek())) {
+            log.info("Elevator {}: arrived at queued floor {}", id, currFloor);
             downList.remove();
         }
     }
 
     public void addFloor(int targetFloor) {
         if (currFloor == targetFloor) {
+            log.info("Already on floor {}, doing nothing", targetFloor);
+            return;
+        }
+        if (upList.contains(targetFloor) || downList.contains(targetFloor)) {
+            log.info("Floor already queued, doing nothing");
             return;
         }
 

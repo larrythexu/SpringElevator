@@ -45,7 +45,10 @@ public class ElevatorManager {
      * Adds a new elevator into the system
      */
     public Elevator addElevator() {
-        return new Elevator(elevatorList.size());
+        // TODO: update ID generation - will cause clashes when we introduce removals
+        Elevator newElevator =  new Elevator(elevatorList.size() + 1);
+        elevatorList.add(newElevator);
+        return newElevator;
     }
 
     public void stepElevators() {
