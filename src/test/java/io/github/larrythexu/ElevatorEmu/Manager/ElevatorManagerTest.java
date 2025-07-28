@@ -1,71 +1,105 @@
 package io.github.larrythexu.ElevatorEmu.Manager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
+import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class) // Hooks up mockito and init mocks
 public class ElevatorManagerTest {
 
-    private ElevatorManager elevatorManager;
+  private ElevatorManager elevatorManager;
 
-    @Mock
-    private SelectorStrategy Strategy1;
+  @Mock private ElevatorRepository elevatorRepository;
 
-    @Mock
-    private SelectorStrategy Strategy2;
+  @Mock private SelectorStrategy Strategy1;
 
-    @Mock
-    private Elevator elevator1;
+  @Mock private SelectorStrategy Strategy2;
 
-    @Mock
-    private Elevator elevator2;
+  @Mock private Elevator elevator1;
 
-    @BeforeEach
-    void setUp() {
-        Map<String, SelectorStrategy> strategies = Map.of(
-                "SimpleSelector", Strategy1,
-                "ComplexSelector", Strategy2
-        );
+  @Mock private Elevator elevator2;
 
-        elevatorManager = new ElevatorManager(strategies);
-        elevatorManager.init();
-    }
+  int TEST_FLOOR = 1;
+  int TEST_ID_2 = 2;
 
-    @Test
-    void testConstruction() {
-        assertEquals(Strategy1, elevatorManager.getActiveStrategy());
-        assertEquals(1, elevatorManager.getElevatorList().size());
-    }
+  @BeforeEach
+  void setUp() {
+    Map<String, SelectorStrategy> strategies =
+        Map.of(
+            "SimpleSelector", Strategy1,
+            "ComplexSelector", Strategy2);
 
-    @Test
-    void testSetSelectionStrategy() {
-        elevatorManager.setSelectionStrategy("ComplexSelector");
-        assertEquals(Strategy2, elevatorManager.getActiveStrategy());
+    elevatorManager = new ElevatorManager(elevatorRepository, strategies);
+    elevatorManager.init();
+  }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            elevatorManager.setSelectionStrategy("PEWGFSelector");
+  @Test
+  void testConstruction() {
+    assertEquals(Strategy1, elevatorManager.getActiveStrategy());
+    assertEquals(elevatorRepository, elevatorManager.getElevatorRepository());
+  }
+
+  @Test
+  void testSetSelectionStrategy() {
+    elevatorManager.setSelectionStrategy("ComplexSelector");
+    assertEquals(Strategy2, elevatorManager.getActiveStrategy());
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          elevatorManager.setSelectionStrategy("PEWGFSelector");
         });
-    }
+  }
 
-    @Test
-    void testAddElevator() {
-        Elevator newElevator = elevatorManager.addElevator();
-        assertEquals(2, newElevator.getId());
-        assertEquals(2, elevatorManager.getElevatorList().size());
-    }
+  @Test
+  void testAddElevator() {
+    ArgumentCaptor<Elevator> elevatorCaptor = ArgumentCaptor.forClass(Elevator.class);
 
+    // Simulate we already have one elevator
+    when(elevatorRepository.getSize()).thenReturn(1);
+    elevatorManager.addElevator();
+    verify(elevatorRepository).addElevator(elevatorCaptor.capture());
+
+    Elevator capturedElevator = elevatorCaptor.getValue();
+    assertEquals(TEST_ID_2, capturedElevator.getId());
+  }
+
+  @Test
+  void testGetElevator() {
+    elevatorManager.getElevator(TEST_ID_2);
+    verify(elevatorRepository).getElevator(TEST_ID_2);
+  }
+
+  @Test
+  void testStep() {
+    when(elevatorRepository.getAllElevators()).thenReturn(List.of(elevator1, elevator2));
+
+    elevatorManager.stepElevators();
+
+    verify(elevator1).updateState();
+    verify(elevator2).updateState();
+  }
+
+  @Test
+  void testHandleFloor() {
+    when(Strategy1.chooseElevator(elevatorRepository, TEST_FLOOR)).thenReturn(elevator1);
+
+    elevatorManager.handleFloorRequest(TEST_FLOOR);
+    verify(elevator1).addFloor(TEST_FLOOR);
+  }
 }

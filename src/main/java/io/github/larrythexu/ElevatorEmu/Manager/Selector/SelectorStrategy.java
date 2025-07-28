@@ -1,9 +1,8 @@
 package io.github.larrythexu.ElevatorEmu.Manager.Selector;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
-
-import java.util.List;
+import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 
 public interface SelectorStrategy {
-    Elevator chooseElevator(List<Elevator> elevatorList, int requestFloor);
+  Elevator chooseElevator(ElevatorRepository elevatorRepository, int requestFloor);
 }
