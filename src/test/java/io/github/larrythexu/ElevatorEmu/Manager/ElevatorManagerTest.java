@@ -7,9 +7,13 @@ import static org.mockito.Mockito.when;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
+import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
 import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,14 +40,20 @@ public class ElevatorManagerTest {
 
   int TEST_FLOOR = 1;
   int TEST_ID_2 = 2;
+  String STRATEGY_1 = "simpleselector";
+  String STRATEGY_2 = "complexselector";
 
   @BeforeEach
   void setUp() {
-    Map<String, SelectorStrategy> strategies =
-        Map.of(
-            "SimpleSelector", Strategy1,
-            "ComplexSelector", Strategy2);
+//    Map<String, SelectorStrategy> strategies =
+//        Map.of(
+//            "SimpleSelector", Strategy1,
+//            "ComplexSelector", Strategy2);
 
+    when(Strategy1.name()).thenReturn(STRATEGY_1);
+    when(Strategy2.name()).thenReturn(STRATEGY_2);
+
+    List<SelectorStrategy> strategies = List.of(Strategy1, Strategy2);
     elevatorManager = new ElevatorManager(elevatorRepository, strategies);
     elevatorManager.init();
   }
@@ -56,7 +66,7 @@ public class ElevatorManagerTest {
 
   @Test
   void testSetSelectionStrategy() {
-    elevatorManager.setSelectionStrategy("ComplexSelector");
+    elevatorManager.setSelectionStrategy(STRATEGY_2);
     assertEquals(Strategy2, elevatorManager.getActiveStrategy());
 
     assertThrows(
@@ -81,8 +91,17 @@ public class ElevatorManagerTest {
 
   @Test
   void testGetElevator() {
+    when(elevatorRepository.getElevator(TEST_ID_2)).thenReturn(Optional.of(elevator2));
     elevatorManager.getElevator(TEST_ID_2);
     verify(elevatorRepository).getElevator(TEST_ID_2);
+  }
+
+  @Test
+  void testGetElevatorNotFound() {
+    when(elevatorRepository.getElevator(TEST_ID_2)).thenReturn(Optional.empty());
+    assertThrows(ElevatorNotFoundException.class, () -> {
+      elevatorManager.getElevator(TEST_ID_2);
+    });
   }
 
   @Test

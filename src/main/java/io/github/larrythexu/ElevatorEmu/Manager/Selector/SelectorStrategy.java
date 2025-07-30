@@ -5,4 +5,5 @@ import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 
 public interface SelectorStrategy {
   Elevator chooseElevator(ElevatorRepository elevatorRepository, int requestFloor);
+  String name();
 }

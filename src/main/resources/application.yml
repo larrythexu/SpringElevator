@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: ElevatorEmu
+
+  # disable docker for now
+  docker:
+    compose:
+      enabled: false
+

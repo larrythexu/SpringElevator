@@ -2,10 +2,12 @@ package io.github.larrythexu.ElevatorEmu.Manager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
+import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
 import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Getter
 @Service
+@Slf4j
 public class ElevatorManager {
 
   // In-memory list of elevators and their states!!
@@ -22,9 +25,17 @@ public class ElevatorManager {
   private final Map<String, SelectorStrategy> selectionStrategies;
 
   public ElevatorManager(
-      ElevatorRepository elevatorRepository, Map<String, SelectorStrategy> selectionStrategies) {
+      ElevatorRepository elevatorRepository,
+      List<SelectorStrategy> strategyList
+  ) {
     this.elevatorRepository = elevatorRepository;
-    this.selectionStrategies = selectionStrategies;
+
+    // Put all selector strategies into an accessible map
+    // K:V - strategy name (lowercase) : strategy
+    this.selectionStrategies = new HashMap<>();
+    for (SelectorStrategy strategy : strategyList) {
+      selectionStrategies.put(strategy.name().toLowerCase(), strategy);
+    }
 
     // TODO: temporary only creating a single elevator
     //        this.elevatorList.add(new Elevator(1));
@@ -35,8 +46,8 @@ public class ElevatorManager {
 
   @PostConstruct
   public void init() {
-    // Set default selection strategy
-    this.activeStrategy = selectionStrategies.get("SimpleSelector");
+    // Set default selection strategy TODO: there's gotta be a better way to set this
+    this.activeStrategy = selectionStrategies.get("simpleselector");
   }
 
   /** Adds a new elevator into the system */
@@ -47,8 +58,13 @@ public class ElevatorManager {
     return newElevator;
   }
 
-  public Optional<Elevator> getElevator(int id) {
-    return elevatorRepository.getElevator(id);
+  public Elevator getElevator(int id) {
+    return elevatorRepository.getElevator(id)
+            .orElseThrow(() -> new ElevatorNotFoundException(id));
+  }
+
+  public List<Elevator> getAllElevators() {
+    return elevatorRepository.getAllElevators();
   }
 
   public void stepElevators() {
@@ -60,7 +76,7 @@ public class ElevatorManager {
     chosenElevator.addFloor(floor);
   }
 
-  public void setSelectionStrategy(String newStrategy) {
+  public SelectorStrategy setSelectionStrategy(String newStrategy) {
     SelectorStrategy strategy = selectionStrategies.get(newStrategy);
 
     if (strategy == null) {
@@ -68,5 +84,6 @@ public class ElevatorManager {
     }
 
     this.activeStrategy = strategy;
+    return strategy;
   }
 }

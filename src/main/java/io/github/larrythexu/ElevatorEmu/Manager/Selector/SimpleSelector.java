@@ -22,4 +22,9 @@ public class SimpleSelector implements SelectorStrategy {
 
     return elevatorList.get(counter++);
   }
+
+  @Override
+  public String name() {
+    return this.getClass().getSimpleName();
+  }
 }
