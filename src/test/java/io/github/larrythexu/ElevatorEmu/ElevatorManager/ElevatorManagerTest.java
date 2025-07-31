@@ -1,17 +1,14 @@
-package io.github.larrythexu.ElevatorEmu.Manager;
+package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
-import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
+import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,11 +42,6 @@ public class ElevatorManagerTest {
 
   @BeforeEach
   void setUp() {
-//    Map<String, SelectorStrategy> strategies =
-//        Map.of(
-//            "SimpleSelector", Strategy1,
-//            "ComplexSelector", Strategy2);
-
     when(Strategy1.name()).thenReturn(STRATEGY_1);
     when(Strategy2.name()).thenReturn(STRATEGY_2);
 
@@ -106,19 +98,27 @@ public class ElevatorManagerTest {
 
   @Test
   void testStep() {
-    when(elevatorRepository.getAllElevators()).thenReturn(List.of(elevator1, elevator2));
+    List<Elevator> ELEVATOR_LIST = List.of(elevator1, elevator2);
+    when(elevatorRepository.getAllElevators()).thenReturn(ELEVATOR_LIST);
 
-    elevatorManager.stepElevators();
+    List<Elevator> returnList = elevatorManager.stepElevators();
 
     verify(elevator1).updateState();
     verify(elevator2).updateState();
+    assertEquals(ELEVATOR_LIST, returnList);
+
+    elevatorManager.stepElevators();
+    verify(elevator1, times(2)).updateState();
+    verify(elevator2, times(2)).updateState();
+    assertEquals(ELEVATOR_LIST, returnList);
   }
 
   @Test
   void testHandleFloor() {
     when(Strategy1.chooseElevator(elevatorRepository, TEST_FLOOR)).thenReturn(elevator1);
 
-    elevatorManager.handleFloorRequest(TEST_FLOOR);
+    Elevator chosen = elevatorManager.handleFloorRequest(TEST_FLOOR);
     verify(elevator1).addFloor(TEST_FLOOR);
+    assertEquals(elevator1, chosen);
   }
 }

@@ -1,4 +1,4 @@
-package io.github.larrythexu.ElevatorEmu.Manager.Selector;
+package io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;

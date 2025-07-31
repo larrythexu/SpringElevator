@@ -1,7 +1,6 @@
-package io.github.larrythexu.ElevatorEmu.Manager;
+package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
-import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,15 +32,21 @@ public class ElevatorManagerController {
     return elevatorManager.addElevator();
   }
 
+  // FOR DEBUGGING
+  @PostMapping("/elevators/step")
+  public List<Elevator> stepElevators() {
+    return elevatorManager.stepElevators();
+  }
+
 //  Potentially have a way to add customized/specific elevators?
 //  - maybe dto implementation needed
 //  public Elevator addElevatorClass()
 
   @PostMapping("/elevators/request-floor/{floor}")
-  public void requestFloor(
+  public Elevator requestFloor(
           @PathVariable("floor") int floor
   ) {
-    elevatorManager.handleFloorRequest(floor);
+    return elevatorManager.handleFloorRequest(floor);
   }
 
   @GetMapping("/strategy")

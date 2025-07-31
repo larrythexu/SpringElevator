@@ -19,16 +19,18 @@ public class Elevator {
   // Potentially add a separate field for STOPS (so that it's not immediate)
 
   public int moveUp() {
-    return ++currFloor;
+    this.currFloor += 1;
+    return this.currFloor;
   }
 
   public int moveDown() {
-    return --currFloor;
+    this.currFloor -= 1;
+    return this.currFloor;
   }
 
-  public boolean isNeutral() {
-    return direction == Direction.NEUTRAL;
-  }
+//  public boolean isNeutral() {
+//    return direction == Direction.NEUTRAL;
+//  }
 
   /**
    * Updates the elevator's state based on its direction and destinations. If it reaches a floor, it
@@ -98,15 +100,15 @@ public class Elevator {
     }
   }
 
-  /**
-   * Returns the next target destination floor, depending on direction If no floors in current
-   * direction, returns -1
-   */
-  public int getNextFloor() {
-    return switch (direction) {
-      case UP -> (upList.isEmpty()) ? -1 : upList.poll();
-      case DOWN -> (downList.isEmpty()) ? -1 : downList.poll();
-      default -> -1;
-    };
-  }
+//  /**
+//   * Returns the next target destination floor, depending on direction If no floors in current
+//   * direction, returns -1
+//   */
+//  public int getNextTargetFloor() {
+//    return switch (direction) {
+//      case UP -> (upList.isEmpty()) ? -1 : upList.peek();
+//      case DOWN -> (downList.isEmpty()) ? -1 : downList.peek();
+//      default -> -1;
+//    };
+//  }
 }

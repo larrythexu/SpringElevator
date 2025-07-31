@@ -7,3 +7,7 @@ spring:
     compose:
       enabled: false
 
+elevator:
+  scheduler:
+    delay: 1000
+

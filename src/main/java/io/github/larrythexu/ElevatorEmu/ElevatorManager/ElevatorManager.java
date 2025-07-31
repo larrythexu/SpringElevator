@@ -1,9 +1,9 @@
-package io.github.larrythexu.ElevatorEmu.Manager;
+package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
-import io.github.larrythexu.ElevatorEmu.Manager.Selector.SelectorStrategy;
+import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
 import lombok.Getter;
@@ -36,12 +36,6 @@ public class ElevatorManager {
     for (SelectorStrategy strategy : strategyList) {
       selectionStrategies.put(strategy.name().toLowerCase(), strategy);
     }
-
-    // TODO: temporary only creating a single elevator
-    //        this.elevatorList.add(new Elevator(1));
-    //        for (int i = 1; i < 3; i++) {
-    //            elevatorList.add(new Elevator(i));
-    //        }
   }
 
   @PostConstruct
@@ -67,13 +61,15 @@ public class ElevatorManager {
     return elevatorRepository.getAllElevators();
   }
 
-  public void stepElevators() {
+  public List<Elevator> stepElevators() {
     elevatorRepository.getAllElevators().forEach(Elevator::updateState);
+    return elevatorRepository.getAllElevators();
   }
 
-  public void handleFloorRequest(int floor) {
+  public Elevator handleFloorRequest(int floor) {
     Elevator chosenElevator = activeStrategy.chooseElevator(elevatorRepository, floor);
     chosenElevator.addFloor(floor);
+    return chosenElevator;
   }
 
   public SelectorStrategy setSelectionStrategy(String newStrategy) {
