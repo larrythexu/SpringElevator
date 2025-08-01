@@ -1,13 +1,14 @@
 package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
+
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -16,9 +17,7 @@ public class ElevatorManagerController {
   private final ElevatorManager elevatorManager;
 
   @GetMapping("/elevators/{id}")
-  public Elevator getElevator(
-          @PathVariable("id") int id
-  ) {
+  public Elevator getElevator(@PathVariable("id") int id) {
     return elevatorManager.getElevator(id);
   }
 
@@ -32,20 +31,28 @@ public class ElevatorManagerController {
     return elevatorManager.addElevator();
   }
 
+  @PostMapping("/elevators/add-elevator/{num-elevators}")
+  public List<Elevator> addElevators(@PathVariable("num-elevators") int numElevators) {
+    List<Elevator> elevatorList = new ArrayList<>();
+
+    for (int i = 0; i < numElevators; i++) {
+      elevatorList.add(elevatorManager.addElevator());
+    }
+    return elevatorList;
+  }
+
   // FOR DEBUGGING
   @PostMapping("/elevators/step")
   public List<Elevator> stepElevators() {
     return elevatorManager.stepElevators();
   }
 
-//  Potentially have a way to add customized/specific elevators?
-//  - maybe dto implementation needed
-//  public Elevator addElevatorClass()
+  //  Potentially have a way to add customized/specific elevators?
+  //  - maybe dto implementation needed
+  //  public Elevator addElevatorClass()
 
   @PostMapping("/elevators/request-floor/{floor}")
-  public Elevator requestFloor(
-          @PathVariable("floor") int floor
-  ) {
+  public Elevator requestFloor(@PathVariable("floor") int floor) {
     return elevatorManager.handleFloorRequest(floor);
   }
 
@@ -55,10 +62,7 @@ public class ElevatorManagerController {
   }
 
   @PostMapping("/strategy/{strategy-name}")
-  public String setSelectionStrategy(
-          @PathVariable("strategy-name") String strategy
-  ) {
+  public String setSelectionStrategy(@PathVariable("strategy-name") String strategy) {
     return elevatorManager.setSelectionStrategy(strategy.toLowerCase()).name();
   }
-
 }

@@ -5,12 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
+import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
-import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @Slf4j
-@ExtendWith(MockitoExtension.class) // Hooks up mockito and init mocks
+@ExtendWith(MockitoExtension.class)
 public class ElevatorManagerTest {
 
   private ElevatorManager elevatorManager;
@@ -91,9 +90,11 @@ public class ElevatorManagerTest {
   @Test
   void testGetElevatorNotFound() {
     when(elevatorRepository.getElevator(TEST_ID_2)).thenReturn(Optional.empty());
-    assertThrows(ElevatorNotFoundException.class, () -> {
-      elevatorManager.getElevator(TEST_ID_2);
-    });
+    assertThrows(
+        ElevatorNotFoundException.class,
+        () -> {
+          elevatorManager.getElevator(TEST_ID_2);
+        });
   }
 
   @Test

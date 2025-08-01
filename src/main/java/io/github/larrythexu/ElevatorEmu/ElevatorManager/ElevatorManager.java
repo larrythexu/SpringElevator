@@ -1,9 +1,9 @@
 package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
+import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
-import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
 import lombok.Getter;
@@ -25,9 +25,7 @@ public class ElevatorManager {
   private final Map<String, SelectorStrategy> selectionStrategies;
 
   public ElevatorManager(
-      ElevatorRepository elevatorRepository,
-      List<SelectorStrategy> strategyList
-  ) {
+      ElevatorRepository elevatorRepository, List<SelectorStrategy> strategyList) {
     this.elevatorRepository = elevatorRepository;
 
     // Put all selector strategies into an accessible map
@@ -53,8 +51,7 @@ public class ElevatorManager {
   }
 
   public Elevator getElevator(int id) {
-    return elevatorRepository.getElevator(id)
-            .orElseThrow(() -> new ElevatorNotFoundException(id));
+    return elevatorRepository.getElevator(id).orElseThrow(() -> new ElevatorNotFoundException(id));
   }
 
   public List<Elevator> getAllElevators() {

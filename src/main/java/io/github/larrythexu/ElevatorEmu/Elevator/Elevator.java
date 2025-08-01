@@ -19,18 +19,16 @@ public class Elevator {
   // Potentially add a separate field for STOPS (so that it's not immediate)
 
   public int moveUp() {
-    this.currFloor += 1;
-    return this.currFloor;
+    currFloor += 1;
+    log.debug("Elevator {}: Moving UP to floor {}", id, currFloor);
+    return currFloor;
   }
 
   public int moveDown() {
-    this.currFloor -= 1;
-    return this.currFloor;
+    currFloor -= 1;
+    log.debug("Elevator {}: Moving DOWN to floor {}", id, currFloor);
+    return currFloor;
   }
-
-//  public boolean isNeutral() {
-//    return direction == Direction.NEUTRAL;
-//  }
 
   /**
    * Updates the elevator's state based on its direction and destinations. If it reaches a floor, it
@@ -42,6 +40,7 @@ public class Elevator {
 
     // If no more destinations, set to Neutral
     if (upList.isEmpty() && downList.isEmpty()) {
+      log.info("Elevator {}: No more destinations, going neutral", id);
       direction = Direction.NEUTRAL;
       return;
     }
@@ -100,15 +99,15 @@ public class Elevator {
     }
   }
 
-//  /**
-//   * Returns the next target destination floor, depending on direction If no floors in current
-//   * direction, returns -1
-//   */
-//  public int getNextTargetFloor() {
-//    return switch (direction) {
-//      case UP -> (upList.isEmpty()) ? -1 : upList.peek();
-//      case DOWN -> (downList.isEmpty()) ? -1 : downList.peek();
-//      default -> -1;
-//    };
-//  }
+  //  /**
+  //   * Returns the next target destination floor, depending on direction If no floors in current
+  //   * direction, returns -1
+  //   */
+  //  public int getNextTargetFloor() {
+  //    return switch (direction) {
+  //      case UP -> (upList.isEmpty()) ? -1 : upList.peek();
+  //      case DOWN -> (downList.isEmpty()) ? -1 : downList.peek();
+  //      default -> -1;
+  //    };
+  //  }
 }
