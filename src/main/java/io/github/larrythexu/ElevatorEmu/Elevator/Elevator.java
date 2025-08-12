@@ -1,8 +1,12 @@
 package io.github.larrythexu.ElevatorEmu.Elevator;
 
 import io.github.larrythexu.ElevatorEmu.Enums.Direction;
+
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +44,7 @@ public class Elevator {
 
     // If no more destinations, set to Neutral
     if (upList.isEmpty() && downList.isEmpty()) {
-      log.info("Elevator {}: No more destinations, going neutral", id);
+//      log.info("Elevator {}: No more destinations, going neutral", id);
       direction = Direction.NEUTRAL;
       return;
     }
@@ -97,6 +101,20 @@ public class Elevator {
     } else {
       upList.add(targetFloor);
     }
+  }
+
+  public ElevatorStateDTO getState() {
+    List<Integer> destinations = new ArrayList<>();
+
+    if (direction == Direction.UP || direction == Direction.NEUTRAL) {
+      destinations.addAll(upList);
+      destinations.addAll(downList);
+    } else {
+      destinations.addAll(downList);
+      destinations.addAll(upList);
+    }
+
+    return new ElevatorStateDTO(id, currFloor, direction, destinations);
   }
 
   //  /**

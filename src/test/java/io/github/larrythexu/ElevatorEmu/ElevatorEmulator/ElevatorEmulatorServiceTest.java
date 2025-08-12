@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,21 +22,20 @@ import java.util.concurrent.TimeUnit;
 @ExtendWith(MockitoExtension.class)
 public class ElevatorEmulatorServiceTest {
 
-  private ElevatorEmulatorService elevatorEmulatorService;
-
   @Mock private ElevatorManager elevatorManager;
 
   @Mock private ScheduledExecutorService elevatorScheduler;
 
+  @Mock private SimpMessagingTemplate messagingTemplate;
+
   @Mock private ScheduledFuture<?> mockFuture;
+
+  @InjectMocks
+  private ElevatorEmulatorService elevatorEmulatorService;
+
 
   long TEST_STEP_DELAY = 2000;
   long TEST_START_DELAY = 0;
-
-  @BeforeEach
-  void setup() {
-    elevatorEmulatorService = new ElevatorEmulatorService(elevatorManager, elevatorScheduler);
-  }
 
   @Test
   void testStart() {

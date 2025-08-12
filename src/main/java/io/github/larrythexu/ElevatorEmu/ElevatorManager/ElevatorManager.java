@@ -1,6 +1,7 @@
 package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
+import io.github.larrythexu.ElevatorEmu.Elevator.ElevatorStateDTO;
 import io.github.larrythexu.ElevatorEmu.ElevatorManager.Selector.SelectorStrategy;
 import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
@@ -78,5 +79,14 @@ public class ElevatorManager {
 
     this.activeStrategy = strategy;
     return strategy;
+  }
+
+  public List<ElevatorStateDTO> getStates() {
+    List<ElevatorStateDTO> elevatorStates = new ArrayList<>();
+    elevatorRepository.getAllElevators().forEach(elevator -> {
+      elevatorStates.add(elevator.getState());
+    });
+
+    return elevatorStates;
   }
 }
