@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-    // Using SockJS, add our stomp endpoint for front-end to connect to.
+    // Using Stomp, add our websocket endpoint for front-end to connect to.
     stompEndpointRegistry.addEndpoint("/ws")
             .setAllowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*");
   }
