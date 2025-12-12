@@ -14,4 +14,6 @@ public interface ElevatorRepository {
   void removeElevator(Elevator elevator);
 
   int getSize();
+
+  void clear();
 }

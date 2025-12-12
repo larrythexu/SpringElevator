@@ -35,6 +35,7 @@ public class ElevatorManagerTest {
   @Mock private Elevator elevator2;
 
   int TEST_FLOOR = 1;
+  int TEST_ID_1 = 1;
   int TEST_ID_2 = 2;
   String STRATEGY_1 = "simpleselector";
   String STRATEGY_2 = "complexselector";
@@ -70,14 +71,34 @@ public class ElevatorManagerTest {
   @Test
   void testAddElevator() {
     ArgumentCaptor<Elevator> elevatorCaptor = ArgumentCaptor.forClass(Elevator.class);
-
-    // Simulate we already have one elevator
-    when(elevatorRepository.getSize()).thenReturn(1);
+    // Test standard incrementation
     elevatorManager.addElevator();
-    verify(elevatorRepository).addElevator(elevatorCaptor.capture());
+    elevatorManager.addElevator();
+    verify(elevatorRepository, times(2)).addElevator(elevatorCaptor.capture());
 
-    Elevator capturedElevator = elevatorCaptor.getValue();
-    assertEquals(TEST_ID_2, capturedElevator.getId());
+    List<Elevator> capturedElevator = elevatorCaptor.getAllValues();
+    assertEquals(TEST_ID_1, capturedElevator.get(0).getId());
+    assertEquals(TEST_ID_2, capturedElevator.get(1).getId());
+  }
+
+  @Test
+  void testAddElevatorCounter() {
+    ArgumentCaptor<Elevator> elevatorCaptor = ArgumentCaptor.forClass(Elevator.class);
+    when(elevatorRepository.getElevator(TEST_ID_1)).thenReturn(Optional.of(elevator1));
+
+    // Test incrementation after deletion (Delete ID_1, keep ID_2, ID_3)
+    elevatorManager.addElevator();
+    elevatorManager.addElevator();
+    elevatorManager.removeElevator(TEST_ID_1);
+    elevatorManager.addElevator();
+    // Test incrementation after reset
+    elevatorManager.resetElevators();
+    elevatorManager.addElevator();
+    verify(elevatorRepository, times(4)).addElevator(elevatorCaptor.capture());
+
+    List<Elevator> capturedElevator = elevatorCaptor.getAllValues();
+    assertEquals(3, capturedElevator.get(2).getId());
+    assertEquals(TEST_ID_1, capturedElevator.get(3).getId());
   }
 
   @Test
@@ -95,6 +116,19 @@ public class ElevatorManagerTest {
         () -> {
           elevatorManager.getElevator(TEST_ID_2);
         });
+  }
+
+  @Test
+  void testRemoveElevator() {
+    when(elevatorRepository.getElevator(TEST_ID_2)).thenReturn(Optional.of(elevator2));
+    elevatorManager.removeElevator(TEST_ID_2);
+    verify(elevatorRepository).removeElevator(elevator2);
+  }
+
+  @Test
+  void testReset() {
+    elevatorManager.resetElevators();
+    verify(elevatorRepository).clear();
   }
 
   @Test

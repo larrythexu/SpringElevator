@@ -7,6 +7,8 @@ import io.github.larrythexu.ElevatorEmu.ElevatorRepository.ElevatorRepository;
 import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class ElevatorManager {
+
+  private static final AtomicInteger COUNTER = new AtomicInteger(1);
 
   // In-memory list of elevators and their states!!
   private final ElevatorRepository elevatorRepository;
@@ -46,9 +50,19 @@ public class ElevatorManager {
   /** Adds a new elevator into the system */
   public Elevator addElevator() {
     // TODO: update ID generation - will cause clashes when we introduce removals
-    Elevator newElevator = new Elevator(elevatorRepository.getSize() + 1);
+    Elevator newElevator = new Elevator(COUNTER.getAndIncrement());
     elevatorRepository.addElevator(newElevator);
     return newElevator;
+  }
+
+  public void removeElevator(int id) {
+    Elevator removed = getElevator(id);
+    elevatorRepository.removeElevator(removed);
+  }
+
+  public void resetElevators() {
+    elevatorRepository.clear();
+    COUNTER.set(1);
   }
 
   public Elevator getElevator(int id) {

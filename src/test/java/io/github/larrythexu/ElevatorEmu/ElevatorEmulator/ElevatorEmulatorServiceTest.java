@@ -1,9 +1,7 @@
 package io.github.larrythexu.ElevatorEmu.ElevatorEmulator;
 
 import io.github.larrythexu.ElevatorEmu.ElevatorManager.ElevatorManager;
-import io.github.larrythexu.ElevatorEmu.Enums.EmulatorState;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,5 +39,11 @@ public class ElevatorEmulatorServiceTest {
   void testStart() {
     elevatorEmulatorService.start();
     verify(elevatorScheduler).scheduleAtFixedRate(any(Runnable.class), eq(TEST_START_DELAY), eq(TEST_STEP_DELAY), eq(TimeUnit.MILLISECONDS));
+  }
+
+  @Test
+  void testReset() {
+    elevatorEmulatorService.reset();
+    verify(elevatorManager).resetElevators();
   }
 }
