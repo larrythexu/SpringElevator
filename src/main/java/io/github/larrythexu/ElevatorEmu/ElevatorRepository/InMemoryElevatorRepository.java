@@ -35,4 +35,9 @@ public class InMemoryElevatorRepository implements ElevatorRepository {
   public int getSize() {
     return elevatorList.size();
   }
+
+  @Override
+  public void clear() {
+    elevatorList.clear();
+  }
 }

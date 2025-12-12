@@ -18,11 +18,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-    // Change OriginPattern if this ever moves online - only allowed locally for now
+    // Using SockJS, add our stomp endpoint for front-end to connect to.
     stompEndpointRegistry.addEndpoint("/ws")
-            .setAllowedOriginPatterns("*")
-//            .setAllowedOriginPatterns("http://localhost",  "http://127.0.0.1")
-            .withSockJS();
+            .setAllowedOriginPatterns("http://localhost:*", "http://127.0.0.1:*");
   }
 
 }

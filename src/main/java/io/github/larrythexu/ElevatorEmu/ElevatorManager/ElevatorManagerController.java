@@ -41,6 +41,16 @@ public class ElevatorManagerController {
     return elevatorList;
   }
 
+  @PostMapping("/elevators/remove-elevator/{elevator-id}")
+  public void removeElevator(@PathVariable("elevator-id") int id) {
+    elevatorManager.removeElevator(id);
+  }
+
+  @PostMapping("/elevators/reset")
+  public void resetEmulator() {
+    elevatorManager.resetElevators();
+  }
+
   // FOR DEBUGGING
   @PostMapping("/elevators/step")
   public List<Elevator> stepElevators() {

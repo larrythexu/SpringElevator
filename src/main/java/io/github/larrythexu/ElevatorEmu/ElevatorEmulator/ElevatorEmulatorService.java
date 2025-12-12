@@ -62,6 +62,11 @@ public class ElevatorEmulatorService {
     }
   }
 
+  public void reset() {
+    stop();
+    elevatorManager.resetElevators();
+  }
+
   public EmulatorState getEmulatorState() {
     return emulationTask == null || emulationTask.isCancelled() ?
             EmulatorState.NOT_RUNNING : EmulatorState.RUNNING;
