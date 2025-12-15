@@ -1,10 +1,9 @@
 package io.github.larrythexu.ElevatorEmu.Elevator;
 
 import io.github.larrythexu.ElevatorEmu.Enums.Direction;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor

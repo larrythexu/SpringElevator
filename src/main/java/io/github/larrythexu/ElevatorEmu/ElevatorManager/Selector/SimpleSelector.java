@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SimpleSelector implements SelectorStrategy {
 
   // Simple selector has basic logic.
-  // It just chooses the next elevator in the list
+  // It just chooses the next elevator in the list - Round Robin style
   private int counter = 0;
 
   @Override

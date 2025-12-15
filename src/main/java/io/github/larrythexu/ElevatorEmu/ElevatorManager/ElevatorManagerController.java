@@ -1,7 +1,6 @@
 package io.github.larrythexu.ElevatorEmu.ElevatorManager;
 
 import io.github.larrythexu.ElevatorEmu.Elevator.Elevator;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
