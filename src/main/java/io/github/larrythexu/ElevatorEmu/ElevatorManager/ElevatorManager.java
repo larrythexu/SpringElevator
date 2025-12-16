@@ -8,7 +8,6 @@ import io.github.larrythexu.ElevatorEmu.Exceptions.ElevatorNotFoundException;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -97,9 +96,12 @@ public class ElevatorManager {
 
   public List<ElevatorStateDTO> getStates() {
     List<ElevatorStateDTO> elevatorStates = new ArrayList<>();
-    elevatorRepository.getAllElevators().forEach(elevator -> {
-      elevatorStates.add(elevator.getState());
-    });
+    elevatorRepository
+        .getAllElevators()
+        .forEach(
+            elevator -> {
+              elevatorStates.add(elevator.getState());
+            });
 
     return elevatorStates;
   }

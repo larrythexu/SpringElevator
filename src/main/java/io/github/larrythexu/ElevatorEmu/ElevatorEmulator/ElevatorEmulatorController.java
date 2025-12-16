@@ -38,5 +38,4 @@ public class ElevatorEmulatorController {
     elevatorEmulatorService.setStepDelay(delay);
     return delay;
   }
-
 }
