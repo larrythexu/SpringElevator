@@ -1,0 +1,56 @@
+name: ElevatorEmulator CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - 'dev-**'
+
+jobs:
+  # LINTING
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: JDK 17 Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Lint
+        run: mvn spotless:check
+
+  # UNIT TEST
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: JDK 17 Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Unit Test
+        run: mvn clean test
+
+  docker-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker Check
+        run: docker build --check .
+
+#  # Build and Deploy
+#  build-and-deploy:
+#    runs-on: ubuntu-latest
+#    needs:
+#      - lint
+#      - unit-test
+#      - docker-check
+#    steps:
+#      - uses: actions/checkout@v3
