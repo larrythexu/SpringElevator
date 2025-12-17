@@ -2,13 +2,11 @@ package io.github.larrythexu.ElevatorEmu.ElevatorEmulator;
 
 import io.github.larrythexu.ElevatorEmu.Enums.EmulatorState;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api")
 public class ElevatorEmulatorController {
 
   private final ElevatorEmulatorService elevatorEmulatorService;
