@@ -5,7 +5,7 @@ my knowledge of Spring Boot and React, while learning with
 STOMP WebSockets. I wanted to fully set up an emulated system just via 
 Spring Boot, in a way that makes sense to me!
 
-Features Spring Boot backend & React Frontend.
+Features Spring Boot Backend & [React Frontend](https://github.com/larrythexu/ElevatorEmuReact)
 
 Current Latest Version: `1.0.0`
 
