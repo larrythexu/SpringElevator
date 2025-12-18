@@ -6,6 +6,9 @@ on:
       - main
       - 'dev-**'
 
+env:
+  IMAGE_NAME: ${{ secrets.DOCKER_USER }}/elevatoremu
+
 jobs:
   # LINTING
   lint:
@@ -45,12 +48,35 @@ jobs:
       - name: Docker Check
         run: docker build --check .
 
-#  # Build and Deploy
-#  build-and-deploy:
-#    runs-on: ubuntu-latest
-#    needs:
-#      - lint
-#      - unit-test
-#      - docker-check
-#    steps:
-#      - uses: actions/checkout@v3
+  # Build and Deploy - MAIN only
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - lint
+      - unit-test
+      - docker-check
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: JDK 17 Setup
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Version
+        id: version
+        run: echo "tag=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Docker Setup
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build Docker Image
+        run: docker build -t ${IMAGE_NAME}:${{ steps.version.outputs.tag }} .
+
+      - name: Publish Docker Image
+        run: docker push ${IMAGE_NAME}:${{ steps.version.outputs.tag }}
