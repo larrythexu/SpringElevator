@@ -7,9 +7,8 @@ Spring Boot, in a way that makes sense to me!
 
 Features Spring Boot backend & React Frontend.
 
-Current Version: `1.0.0`
+Current Latest Version: `1.0.0`
 
----
 ## Download and Setup
 There are 2 methods of downloading and setup. The easiest is via DockerHub for
 immediate usage.
@@ -43,10 +42,9 @@ cd ElevatorEmu
 
 3. This will create a JAR file, which we can run using Java
 ```shell
-java -jar target/<ElevatorEmu-Version>.jar
+java -jar target/<ElevatorEmu-version-tag>.jar
 ```
 
----
 
 ## Using the Emulator
 After running the Docker Image or Running the JAR file, 
