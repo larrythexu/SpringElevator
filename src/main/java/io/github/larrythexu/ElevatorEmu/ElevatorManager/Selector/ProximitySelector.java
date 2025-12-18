@@ -37,6 +37,12 @@ public class ProximitySelector implements SelectorStrategy {
       }
     }
 
+    // Edge case if ALL elevators are going in different direction
+    if (chosenElevator == null) {
+      int randomIdx = (int) (Math.random() * elevatorList.size());
+      chosenElevator = elevatorList.get(randomIdx);
+    }
+
     return chosenElevator;
   }
 
